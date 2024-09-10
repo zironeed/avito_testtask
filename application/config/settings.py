@@ -40,9 +40,10 @@ INSTALLED_APPS = [
 
     'rest_framework',
 
-    'tender_app',
-    'bids_app',
-    'organizations_app',
+    'application.tender_app',
+    'application.bids_app',
+    'application.organization_app',
+    'application.user_app',
 ]
 
 MIDDLEWARE = [
