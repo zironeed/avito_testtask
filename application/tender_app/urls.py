@@ -1,5 +1,6 @@
 from django.urls import path
 from .apps import TenderAppConfig
+from .views import TenderListView, TenderListMyView, TenderCreateView, TenderUpdateView, TenderRollbackView
 
 
 app_name = TenderAppConfig.name
