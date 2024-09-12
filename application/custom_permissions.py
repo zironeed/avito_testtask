@@ -22,3 +22,12 @@ class IsResponsibleOrAuthor(BasePermission):
                                                                 user=request.user).exists()
 
         return is_author or is_responsible
+
+
+class IsTenderResponsible(BasePermission):
+
+    def has_permission(self, request, view):
+        user_tenders = self.request.user.tenders.all()
+        bid_tender = view.get_object().tender
+
+        return bid_tender in user_tenders
