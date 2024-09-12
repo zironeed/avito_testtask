@@ -7,8 +7,11 @@ from ..tender_app.models import Tender
 
 
 class BidListView(ListAPIView):
-    queryset = Bid.objects.filter(status=Bid.Status.PUBLISHED)
     serializer_class = BidSerializer
+
+    def get_queryset(self):
+        tender_pk = self.kwargs.get('tender_pk')
+        return Bid.objects.filter(status=Bid.Status.PUBLISHED, tender__pk=tender_pk)
 
 
 class BidListMyView(ListAPIView):
