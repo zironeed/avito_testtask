@@ -24,7 +24,7 @@ class Organization(models.Model):
 class OrganizationResponsible(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     organization = models.ForeignKey(Organization, on_delete=models.CASCADE, verbose_name='Организация')
-    user = models.ForeignKey('application.user_app.Employee', on_delete=models.CASCADE, verbose_name='Пользователь')
+    user = models.ForeignKey('user_app.Employee', on_delete=models.CASCADE, verbose_name='Пользователь')
 
     def __str__(self):
         return f'{self.user} - {self.organization}'

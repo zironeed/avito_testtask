@@ -22,6 +22,6 @@ from application.views import ping
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/ping/', ping, name='ping'),
-    path('api/tenders/', include('application.tender_app.urls'), namespace='tenders'),
-    path('api/bids/', include('application.bids_app.urls'), namespace='bids'),
+    path('api/tenders/', include('application.tender_app.urls', namespace='tenders')),
+    path('api/bids/', include('application.bids_app.urls', namespace='bids')),
 ]

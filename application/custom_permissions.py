@@ -1,5 +1,5 @@
 from rest_framework.permissions import BasePermission
-from organization_app.models import OrganizationResponsible
+from .organization_app.models import OrganizationResponsible
 
 
 class IsResponsible(BasePermission):
