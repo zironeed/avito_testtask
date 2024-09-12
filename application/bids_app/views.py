@@ -2,7 +2,7 @@ from rest_framework.generics import ListAPIView, CreateAPIView, UpdateAPIView
 from rest_framework.response import Response
 from .models import Bid
 from .serializers import BidSerializer
-from ..custom_permissions import IsResponsibleOrAuthor
+from ..custom_permissions import IsResponsibleOrAuthor, IsTenderResponsible
 from ..tender_app.models import Tender
 
 
@@ -40,7 +40,27 @@ class BidUpdateView(UpdateAPIView):
         elif action == 'close':
             bid.status = Bid.Status.CLOSED
 
-        elif action == 'accept':
+        bid.save()
+
+    def update(self, request, *args, **kwargs):
+        bid = self.get_object()
+        action = self.request.data.get('action')
+
+        if action in ['publish', 'close']:
+            self.perform_action(bid, action)
+        else:
+            bid.version += 1
+
+        return Response(self.get_serializer(bid).data)
+
+
+class BidApprovalView(UpdateAPIView):
+    serializer_class = BidSerializer
+    queryset = Bid.objects.all()
+    permission_classes = [IsTenderResponsible]
+
+    def perform_action(self, bid, action):
+        if action == 'accept':
             bid.approval_status = Bid.ApprovalStatus.ACCEPTED
             bid.tender.status = Tender.Status.CLOSED
             bid.tender.save()
@@ -54,10 +74,8 @@ class BidUpdateView(UpdateAPIView):
         bid = self.get_object()
         action = self.request.data.get('action')
 
-        if action in ['publish', 'close', 'accept', 'reject']:
+        if action in ['accept', 'reject']:
             self.perform_action(bid, action)
-        else:
-            bid.version += 1
 
         return Response(self.get_serializer(bid).data)
 
