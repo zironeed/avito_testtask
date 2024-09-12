@@ -1,5 +1,6 @@
 from django.urls import path
 from .apps import BidsAppConfig
+from .views import BidRollbackView, BidListView, BidListMyView, BidCreateView, BidUpdateView
 
 
 app_name = BidsAppConfig.name
