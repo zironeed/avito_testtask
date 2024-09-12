@@ -11,3 +11,14 @@ class IsResponsible(BasePermission):
         organization = request.data.get('organization')
 
         return OrganizationResponsible.objects.filter(organization=organization, user=request.user).exists()
+
+
+class IsResponsibleOrAuthor(BasePermission):
+
+    def has_permission(self, request, view):
+        bid = view.get_object()
+        is_author = bid.creator == request.user
+        is_responsible = OrganizationResponsible.objects.filter(organization=bid.organization,
+                                                                user=request.user).exists()
+
+        return is_author or is_responsible
