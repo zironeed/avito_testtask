@@ -28,7 +28,3 @@ class Tender(models.Model):
 
     def __str__(self):
         return self.name
-
-
-class TenderVersion(models.Model):
-    pass
