@@ -1,8 +1,10 @@
+from rest_framework import status
 from rest_framework.generics import ListAPIView, CreateAPIView, UpdateAPIView
 from rest_framework.response import Response
 from application.custom_permissions import IsResponsible
 from .models import Tender
 from .serializers import TenderSerializer
+from ..organization_app.models import OrganizationResponsible
 
 
 class TenderListView(ListAPIView):
@@ -17,13 +19,18 @@ class TenderListView(ListAPIView):
 
 
 class TenderListMyView(ListAPIView):
+    queryset = Tender.objects.all()
     serializer_class = TenderSerializer
+    permission_classes = [IsResponsible]
 
     def get_queryset(self):
+        print(self.request.user)
+        responsible = OrganizationResponsible.objects.filter(user=self.request.user)
+        print(responsible)
         service = self.request.query_params.get('serviceType')
         if service:
-            return self.queryset.filter(organization=self.request.user.organization, serviceType__iexact=service)
-        return self.queryset.filter(organization=self.request.user.organization)
+            return self.queryset.filter(organization=responsible.organization.id, serviceType__iexact=service)
+        return self.queryset.filter(organization=responsible.organization.id)
 
 
 class TenderCreateView(CreateAPIView):
