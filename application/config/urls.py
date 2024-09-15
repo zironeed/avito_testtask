@@ -19,6 +19,7 @@ from django.urls import path, include
 from application.views import ping
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 
 schema_view = get_schema_view(
@@ -37,4 +38,7 @@ urlpatterns = [
     path('api/ping/', ping, name='ping'),
     path('api/tenders/', include('application.tender_app.urls', namespace='tenders')),
     path('api/bids/', include('application.bids_app.urls', namespace='bids')),
+
+    path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 ]
