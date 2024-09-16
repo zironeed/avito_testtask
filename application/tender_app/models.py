@@ -27,4 +27,4 @@ class Tender(models.Model):
                                      related_name='tenders', verbose_name='Организация')
 
     def __str__(self):
-        return self.name
+        return f'{self.name}'

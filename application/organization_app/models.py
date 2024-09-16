@@ -1,6 +1,6 @@
+import uuid
 from django.db import models
 from django.utils import timezone
-import uuid
 
 
 class Organization(models.Model):
@@ -18,7 +18,7 @@ class Organization(models.Model):
     updated_at = models.DateTimeField(auto_now=True, verbose_name='Дата изменения')
 
     def __str__(self):
-        return self.name
+        return f'{self.name}'
 
 
 class OrganizationResponsible(models.Model):

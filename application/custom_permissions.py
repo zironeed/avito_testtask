@@ -15,8 +15,7 @@ class IsResponsible(BasePermission):
                     organization_id = organization_responsible.organization.id
                     return OrganizationResponsible.objects.filter(organization__id=organization_id,
                                                                   user__id=creator).exists()
-                else:
-                    return False
+                return False
 
             organization_id = request.data.get('organization')
 

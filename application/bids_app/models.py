@@ -26,4 +26,4 @@ class Bid(models.Model):
     creator = models.ForeignKey('user_app.Employee', on_delete=models.CASCADE, verbose_name='Создатель')
 
     def __str__(self):
-        return self.name
+        return f'{self.name}'
