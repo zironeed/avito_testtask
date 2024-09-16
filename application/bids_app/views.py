@@ -1,3 +1,4 @@
+from rest_framework import status
 from rest_framework.generics import ListAPIView, CreateAPIView, UpdateAPIView
 from rest_framework.response import Response
 from .models import Bid
@@ -11,7 +12,7 @@ class BidListView(ListAPIView):
 
     def get_queryset(self):
         tender_pk = self.kwargs.get('tender_pk')
-        return Bid.objects.filter(status=Bid.Status.PUBLISHED, tender__pk=tender_pk)
+        return Bid.objects.filter(status=Bid.LifeStatus.PUBLISHED, tender__pk=tender_pk)
 
 
 class BidListMyView(ListAPIView):
@@ -35,10 +36,10 @@ class BidUpdateView(UpdateAPIView):
 
     def perform_action(self, bid, action):
         if action == 'publish':
-            bid.status = Bid.Status.PUBLISHED
+            bid.status = Bid.LifeStatus.PUBLISHED
 
         elif action == 'close':
-            bid.status = Bid.Status.CLOSED
+            bid.status = Bid.LifeStatus.CLOSED
 
         bid.save()
 
@@ -49,9 +50,15 @@ class BidUpdateView(UpdateAPIView):
         if action in ['publish', 'close']:
             self.perform_action(bid, action)
         else:
+            serializer = self.get_serializer(bid, data=request.data, partial=True)
+            serializer.is_valid(raise_exception=True)
             bid.version += 1
+            serializer.save()
 
         return Response(self.get_serializer(bid).data)
+
+    def put(self, request, *args, **kwargs):
+        return Response({"detail": "Method PUT is not allowed."}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
 
 class BidApprovalView(UpdateAPIView):
@@ -79,7 +86,5 @@ class BidApprovalView(UpdateAPIView):
 
         return Response(self.get_serializer(bid).data)
 
-
-class BidRollbackView(UpdateAPIView):
-    queryset = Bid.objects.all()
-    serializer_class = BidSerializer
+    def put(self, request, *args, **kwargs):
+        return Response({"detail": "Method PUT is not allowed."}, status=status.HTTP_405_METHOD_NOT_ALLOWED)

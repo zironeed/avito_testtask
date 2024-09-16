@@ -29,11 +29,16 @@ class IsResponsible(BasePermission):
 class IsResponsibleOrAuthor(BasePermission):
 
     def has_permission(self, request, view):
-        if request.method == 'POST':
+        if request.method in ['POST', 'PATCH', 'PUT']:
+            organization = request.data.get('organization')
+            if organization:
+                return OrganizationResponsible.objects.filter(
+                    organization=organization,
+                    user=request.user
+                ).exists()
             return OrganizationResponsible.objects.filter(
-                organization=request.data.get('organization'),
-                user=request.user
-            ).exists()
+                    user=request.user
+                ).exists()
 
         bid = view.get_object()
         is_author = bid.creator == request.user
@@ -46,7 +51,7 @@ class IsResponsibleOrAuthor(BasePermission):
 class IsTenderResponsible(BasePermission):
 
     def has_permission(self, request, view):
-        user_tenders = self.request.user.tenders.all()
+        user_tenders = request.user.tenders.all()
         bid_tender = view.get_object().tender
 
         return bid_tender in user_tenders
