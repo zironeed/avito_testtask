@@ -1,15 +1,19 @@
-FROM gradle:4.7.0-jdk8-alpine AS build
-COPY --chown=gradle:gradle . /home/gradle/src
-WORKDIR /home/gradle/src
-RUN gradle build --no-daemon 
+FROM python:3.12-slim
 
-FROM openjdk:8-jre-slim
+WORKDIR /app
+
+COPY . /app
+
+RUN apt-get update -y && apt-get upgrade -y
+
+RUN pip3 install --upgrade pip
+
+COPY requirements.txt /app/requirements.txt
+
+RUN pip3 install --no-cache-dir -r requirements.txt
+
+RUN chmod +x /app/entrypoint.sh
 
 EXPOSE 8080
 
-RUN mkdir /app
-
-COPY --from=build /home/gradle/src/build/libs/*.jar /app/spring-boot-application.jar
-
-ENTRYPOINT ["java", "-XX:+UnlockExperimentalVMOptions", "-XX:+UseCGroupMemoryLimitForHeap", "-Djava.security.egd=file:/dev/./urandom","-jar","/app/spring-boot-application.jar"]
-
+CMD ["/bin/bash", "/app/entrypoint.sh"]
