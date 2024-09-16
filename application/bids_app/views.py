@@ -8,6 +8,10 @@ from ..tender_app.models import Tender
 
 
 class BidListView(ListAPIView):
+    """
+    Список всех предложений с флагом PUBLISHED для одного тендера
+    """
+
     serializer_class = BidSerializer
 
     def get_queryset(self):
@@ -16,6 +20,10 @@ class BidListView(ListAPIView):
 
 
 class BidListMyView(ListAPIView):
+    """
+    Список предложений пользователя/организации
+    """
+
     queryset = Bid.objects.all()
     serializer_class = BidSerializer
 
@@ -24,12 +32,26 @@ class BidListMyView(ListAPIView):
 
 
 class BidCreateView(CreateAPIView):
+    """
+    Создание предложений
+    """
+
     queryset = Bid.objects.all()
     serializer_class = BidSerializer
     permission_classes = [IsResponsibleOrAuthor]
 
 
 class BidUpdateView(UpdateAPIView):
+    """
+    Обновление предложений. Метод PUT закрыт, PATCH - открыт
+    Можно изменить информацию о предложении (название, описание и прочее), либо изменить его флаги
+    Для смены флага используйте "action", например:
+    {"action": "publish"}
+    Доступные actions:
+    * publish - публикация
+    * close - закрытие
+    """
+
     queryset = Bid.objects.all()
     serializer_class = BidSerializer
     permission_classes = [IsResponsibleOrAuthor]
@@ -62,6 +84,16 @@ class BidUpdateView(UpdateAPIView):
 
 
 class BidApprovalView(UpdateAPIView):
+    """
+    Обновление статуса одобрения предложений. Метод PUT закрыт, PATCH - открыт
+    Доступно только для владельцев тендера (ответственных за организацию)
+    Для смены флага используйте "action", например:
+    {"action": "accept"}
+    Доступные actions:
+    * accept - подтверждение
+    * reject - отклонение
+    """
+
     serializer_class = BidSerializer
     queryset = Bid.objects.all()
     permission_classes = [IsTenderResponsible]

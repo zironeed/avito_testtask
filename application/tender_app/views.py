@@ -8,6 +8,10 @@ from ..organization_app.models import OrganizationResponsible
 
 
 class TenderListView(ListAPIView):
+    """
+    Список всех тендеров с флагом PUBLISHED
+    """
+
     queryset = Tender.objects.filter(status=Tender.Status.PUBLISHED)
     serializer_class = TenderSerializer
 
@@ -20,6 +24,10 @@ class TenderListView(ListAPIView):
 
 
 class TenderListMyView(ListAPIView):
+    """
+    Список тендеров пользователя и его организации
+    """
+
     queryset = Tender.objects.all()
     serializer_class = TenderSerializer
     permission_classes = [IsResponsible]
@@ -33,12 +41,26 @@ class TenderListMyView(ListAPIView):
 
 
 class TenderCreateView(CreateAPIView):
+    """
+    Создание тендеров
+    """
+
     queryset = Tender.objects.all()
     serializer_class = TenderSerializer
     permission_classes = [IsResponsible]
 
 
 class TenderUpdateView(UpdateAPIView):
+    """
+    Обновление тендеров. Метод PUT закрыт, PATCH - открыт
+    Можно изменить информацию о тендере (название, описание и прочее), либо изменить его флаги
+    Для смены флага используйте "action", например:
+    {"action": "publish"}
+    Доступные actions:
+    * publish - публикация
+    * close - закрытие
+    """
+
     queryset = Tender.objects.all()
     serializer_class = TenderSerializer
     permission_classes = [IsResponsible]

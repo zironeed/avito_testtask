@@ -5,4 +5,8 @@ from rest_framework.response import Response
 
 @api_view(['GET'])
 def ping(request):
+    """
+    Проверка доступности сервера.
+    """
+
     return Response({'message': 'ok (pong)'}, status=status.HTTP_200_OK)
