@@ -65,7 +65,7 @@ class Command(BaseCommand):
             print('Responsible already exists')
 
         print("""
-        2 организации - Aplhabet и Apple
+        2 организации - Alphabet и Apple
         Обычный пользователь - default_user, password - 12345
         Пользователь с организацией - organization_user, password - 12345
         Администратор - admin, password - admin
