@@ -11,9 +11,12 @@ class Command(BaseCommand):
         call_command('migrate', verbosity=0)
 
         try:
-            call_command('createsuperuser', username='admin', password='admin')
+            call_command('createsuperuser', username='admin', email='', interactive=False)
+            user = Employee.objects.get(username='admin')
+            user.set_password('admin')
+            user.save()
         except Exception:
-            print('Admin already exists')
+            print('User already exists')
 
         try:
             org_1 = Organization.objects.create(
