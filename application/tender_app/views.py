@@ -16,6 +16,7 @@ class TenderListView(ListAPIView):
         service = self.request.query_params.get('serviceType')
         if service:
             return queryset.filter(serviceType__iexact=service)
+        return queryset
 
 
 class TenderListMyView(ListAPIView):
@@ -24,9 +25,7 @@ class TenderListMyView(ListAPIView):
     permission_classes = [IsResponsible]
 
     def get_queryset(self):
-        print(self.request.user)
-        responsible = OrganizationResponsible.objects.filter(user=self.request.user)
-        print(responsible)
+        responsible = OrganizationResponsible.objects.filter(user=self.request.user).first()
         service = self.request.query_params.get('serviceType')
         if service:
             return self.queryset.filter(organization=responsible.organization.id, serviceType__iexact=service)
@@ -57,7 +56,7 @@ class TenderUpdateView(UpdateAPIView):
 
         if action in ['publish', 'close']:
             self.perform_action(tender, action)
-        elif action == 'edit':
+        else:
             serializer = self.get_serializer(tender, data=request.data, partial=True)
             serializer.is_valid(raise_exception=True)
             tender.version += 1
@@ -65,8 +64,5 @@ class TenderUpdateView(UpdateAPIView):
 
         return Response(self.get_serializer(tender).data)
 
-
-class TenderRollbackView(UpdateAPIView):
-    queryset = Tender.objects.all()
-    serializer_class = TenderSerializer
-    permission_classes = [IsResponsible]
+    def put(self, request, *args, **kwargs):
+        return Response({"detail": "Method PUT is not allowed."}, status=status.HTTP_405_METHOD_NOT_ALLOWED)

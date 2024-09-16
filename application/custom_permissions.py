@@ -6,13 +6,13 @@ class IsResponsible(BasePermission):
 
     def has_permission(self, request, view):
         try:
-            creator = request.user
+            creator = request.user.id
 
-            if request.method == 'GET':
+            if request.method in ['GET', 'PATCH', 'PUT']:
                 organization_responsible = OrganizationResponsible.objects.filter(user=request.user).first()
 
                 if organization_responsible:
-                    organization_id = organization_responsible.organization
+                    organization_id = organization_responsible.organization.id
                     return OrganizationResponsible.objects.filter(organization__id=organization_id,
                                                                   user__id=creator).exists()
                 else:
