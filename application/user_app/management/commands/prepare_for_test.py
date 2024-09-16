@@ -9,6 +9,12 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         call_command('makemigrations', verbosity=0)
         call_command('migrate', verbosity=0)
+
+        try:
+            call_command('createsuperuser', username='admin', password='admin')
+        except Exception:
+            print('Admin already exists')
+
         try:
             org_1 = Organization.objects.create(
                 name='Alphabet',
@@ -57,3 +63,12 @@ class Command(BaseCommand):
             resp.save()
         except Exception:
             print('Responsible already exists')
+
+        print("""
+        2 организации - Aplhabet и Apple
+        Обычный пользователь - default_user, password - 12345
+        Пользователь с организацией - organization_user, password - 12345
+        Администратор - admin, password - admin
+        
+        Хорошего вам дня :)
+        """)
