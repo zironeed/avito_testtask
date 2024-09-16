@@ -4,4 +4,4 @@ from .models import Bid
 
 @admin.register(Bid)
 class BidAdmin(admin.ModelAdmin):
-    list_display = ('name', 'status', 'approval_status', 'tender', 'organization', 'creator')
+    list_display = ('name', 'pk', 'status', 'approval_status', 'tender', 'organization', 'creator')
